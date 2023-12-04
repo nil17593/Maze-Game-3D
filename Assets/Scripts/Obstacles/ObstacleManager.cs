@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class ObstacleManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private List<Obstacle> obstacles;
+    [SerializeField] private Transform player;
+    private void Update()
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        foreach (Obstacle obstacle in obstacles)
+        {
+            float distance = Vector3.Distance(player.transform.position, obstacle.transform.position);
+            if (distance <= obstacle.activateDistance)
+            {
+                obstacle.isActive = true;
+            }
+            else
+            {
+                obstacle.isActive = false;
+            }
+
+        }
     }
 }

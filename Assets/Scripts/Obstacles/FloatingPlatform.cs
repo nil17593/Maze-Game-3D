@@ -31,7 +31,7 @@ public class FloatingPlatform : Obstacle
 
     private void Update()
     {
-        if (!isActive)
+        if (!isActive || GameManager.Instance.IsGameOver)
             return;
 
         Activate();

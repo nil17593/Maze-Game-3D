@@ -18,7 +18,7 @@ public abstract class Obstacle : MonoBehaviour
         ThirdPersonMovement player = other.GetComponent<ThirdPersonMovement>();
         if (player != null)
         {
-            //player.TakeDamage();
+            player.TakeDamage();
         }
     }
 }
