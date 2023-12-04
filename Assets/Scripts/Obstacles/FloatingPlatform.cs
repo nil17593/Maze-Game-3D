@@ -16,6 +16,17 @@ public class FloatingPlatform : Obstacle
     void Start()
     {
         initialPosition = transform.position;
+        EventManager.Instance.OnGameOver += HandleGameOverEvent;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.OnGameOver -= HandleGameOverEvent;
+    }
+
+    private void HandleGameOverEvent()
+    {
+        Deactivate();
     }
 
     private void Update()
@@ -23,22 +34,19 @@ public class FloatingPlatform : Obstacle
         if (!isActive)
             return;
 
-        if (isActive)
-        {
-            Activate();
-        }
+        Activate();
     }
 
-    // ovrride method triggeres when player close to this object
+    // Override method triggers when player is close to this object
     public override void Activate()
     {
         float newY = initialPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
     }
 
-    //override method triggers when player moves far away from this object
+    // Override method triggers when player moves far away from this object
     public override void Deactivate()
     {
-        return;
+        transform.position = initialPosition;
     }
 }

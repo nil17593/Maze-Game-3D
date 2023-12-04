@@ -1,44 +1,73 @@
 using UnityEngine;
-using TMPro;
+
 public class ScoreManager : Singleton<ScoreManager>
 {
-    public TextMeshProUGUI scoreText; // Reference to the UI text to display the score
     private float startTime;
+    private float lastSavedTime;
+    private const string startTimeKey = "StartTime";
+    private const string lastSavedTimeKey = "LastSavedTime";
+
+    protected override void Awake()
+    {
+        base.Awake();
+        EventManager.Instance.OnGameOver += HandleGameOverEvent; // Subscribe to the game over event
+    }
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey("StartTime"))
+        CheckpointData checkpointData = CheckPointManager.Instance.LoadCheckpoint();
+        if (checkpointData != null)
         {
-            float savedTime = PlayerPrefs.GetFloat("StartTime");
-            startTime = Time.time - savedTime; // Resume from the saved time
+            lastSavedTime = checkpointData.elapsedTime;
+            startTime = Time.time - lastSavedTime; // Adjust start time based on loaded elapsed time
         }
         else
         {
             startTime = Time.time; // Record the start time when the maze begins
-            PlayerPrefs.SetFloat("StartTime", startTime); // Save the start time
+            lastSavedTime = 0f;
         }
-    }
-
-    // Call this method when a checkpoint is completed
-    public void OnCheckpointReached()
-    {
-        float elapsedTime = Time.time - startTime;
-        PlayerPrefs.SetFloat("ElapsedTime", elapsedTime);
-        PlayerPrefs.Save();
     }
 
     private void Update()
     {
-        // Calculate the elapsed time since the maze started
-        float elapsedTime = Time.time - startTime;
-
-        // Display the elapsed time as the score
-        DisplayScore(elapsedTime);
+        if (!GameManager.Instance.IsGameOver)
+        {
+            lastSavedTime = Time.time - startTime; // Calculate the live time
+            UIManager.Instance.DisplayTime(lastSavedTime); // Display the live time
+        }
     }
 
-    private void DisplayScore(float time)
+    public void OnCheckpointReached()
     {
-        // Display the time as the score on the UI text
-        scoreText.text = "Score: " + Mathf.Round(time).ToString();
-    } 
+        SaveLastSavedTime(); // Save the last saved time when checkpoint is reached
+    }
+
+    private void HandleGameOverEvent()
+    {
+        SaveLastSavedTime(); // Save the last saved time when game is over
+        ResetPlayerPrefs(); // Reset/delete relevant PlayerPrefs
+    }
+
+    private void SaveLastSavedTime()
+    {
+        CheckpointData data = new CheckpointData { elapsedTime = lastSavedTime };
+        CheckPointManager.Instance.SaveCheckpoint(data); // Save the last saved time to JSON
+    }
+
+    private void ResetPlayerPrefs()
+    {
+        PlayerPrefs.DeleteKey(startTimeKey); // Delete specific PlayerPrefs by key
+        PlayerPrefs.DeleteKey(lastSavedTimeKey); // Delete specific PlayerPrefs by key
+        Debug.Log("PlayerPrefs related to ScoreManager reset."); // Log the action (optional)
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.Instance.OnGameOver -= HandleGameOverEvent; // Unsubscribe from the game over event
+    }
+
+    public float GetLastSavedTime()
+    {
+        return lastSavedTime;
+    }
 }

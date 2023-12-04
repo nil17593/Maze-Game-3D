@@ -18,16 +18,7 @@ public abstract class Obstacle : MonoBehaviour
         ThirdPersonMovement player = other.GetComponent<ThirdPersonMovement>();
         if (player != null)
         {
-            isActive = true;
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        ThirdPersonMovement player = collision.gameObject.GetComponent<ThirdPersonMovement>();
-        if (player != null)
-        {
-            isActive = true;
+            //player.TakeDamage();
         }
     }
 }

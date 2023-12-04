@@ -7,6 +7,42 @@ public class CheckPointManager : Singleton<CheckPointManager>
 {
     private string savePath = "checkpointData.json";
 
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
+    private void OnEnable()
+    {
+        EventManager.Instance.OnGameOver += HandleGameOverEvent;
+        EventManager.Instance.OnCheckpointReached += SaveCheckpoint;
+    }
+
+    private void OnDisable()
+    {
+        EventManager.Instance.OnGameOver -= HandleGameOverEvent;
+        EventManager.Instance.OnCheckpointReached -= SaveCheckpoint;
+    }
+
+    public void DeleteCheckpointData()
+    {
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+            Debug.Log("Checkpoint data deleted.");
+        }
+        else
+        {
+            Debug.Log("No checkpoint data to delete.");
+        }
+    }
+
+    private void HandleGameOverEvent()
+    {
+        DeleteCheckpointData(); // Call this method when game is over
+    }
+
     public void SaveCheckpoint(CheckpointData data)
     {
         string jsonData = JsonUtility.ToJson(data);
@@ -19,6 +55,7 @@ public class CheckPointManager : Singleton<CheckPointManager>
         if (File.Exists(savePath))
         {
             string jsonData = File.ReadAllText(savePath);
+            Debug.Log(jsonData);
             return JsonUtility.FromJson<CheckpointData>(jsonData);
         }
         else

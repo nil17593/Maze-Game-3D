@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ThirdPersonMovement : MonoBehaviour//,IDamagable
+public class ThirdPersonMovement : MonoBehaviour, IDamagable
 {
     #region Private Components
     private CharacterController controller;
@@ -31,6 +31,9 @@ public class ThirdPersonMovement : MonoBehaviour//,IDamagable
 
     void Update()
     {
+        if (GameManager.Instance.IsGameOver)
+            return;
+
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
@@ -46,8 +49,26 @@ public class ThirdPersonMovement : MonoBehaviour//,IDamagable
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(hit.collider.name);
+        if (other.gameObject.CompareTag("CheckPoint"))
+        {
+            GameManager.Instance.RemoveCheckPoint(other.gameObject);
+            Vector3 playerPosition = transform.position;
+            float elapsedTime = ScoreManager.Instance.GetLastSavedTime();
+            CheckpointData checkpointData = new CheckpointData
+            {
+                elapsedTime = elapsedTime,
+                playerPosition = playerPosition,
+            };
+            EventManager.Instance.TriggerCheckpointReachedEvent(checkpointData); // Trigger the checkpoint reached event
+        }
+    }
+
+
+    public void TakeDamage()
+    {
+        GameManager.Instance.GameOver();
     }
 }
