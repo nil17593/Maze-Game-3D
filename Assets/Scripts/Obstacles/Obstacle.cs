@@ -2,25 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Obstacle : MonoBehaviour
+namespace RoninLabs.Maze3D
 {
-    public bool isActive { get ; set; }
-    public float activateDistance = 5f;
-
-    // Abstract method to handle activation when player is near
-    public abstract void Activate();
-
-    // Abstract method to handle deactivation when player moves away
-    public abstract void Deactivate();
-
-    private void OnTriggerEnter(Collider other)
+    /// <summary>
+    /// Base abstarct class for the Obstacles 
+    /// </summary>
+    public abstract class Obstacle : MonoBehaviour
     {
-        ThirdPersonMovement player = other.GetComponent<ThirdPersonMovement>();
-        if (player != null)
+        public bool isActive { get; set; }
+        public float activateDistance = 5f;
+
+        // Abstract method to handle activation when player is near
+        public abstract void Activate();
+
+        // Abstract method to handle deactivation when player moves away
+        public abstract void Deactivate();
+
+        private void OnTriggerEnter(Collider other)
         {
-            player.TakeDamage();
+            ThirdPersonMovement player = other.GetComponent<ThirdPersonMovement>();
+            if (player != null)
+            {
+                player.TakeDamage();
+            }
         }
     }
 }
-
-

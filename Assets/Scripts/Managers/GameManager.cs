@@ -2,56 +2,79 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class GameManager : Singleton<GameManager>
+namespace RoninLabs.Maze3D
 {
-    public bool IsGameOver { get; private set; }
-    [SerializeField] private List<GameObject> checkPoints;
-    [SerializeField] private Transform player;
-
-    protected override void Awake()
+    /// <summary>
+    /// manager class handles all the Game data inclusing retrieving the data from json
+    /// </summary>
+    public class GameManager : Singleton<GameManager>
     {
-        base.Awake();
-    }
+        public bool IsGameOver { get; private set; }
+        [Header("Settings")]
+        [SerializeField] private List<GameObject> checkPoints;
+        [SerializeField] private Transform player;
+        [SerializeField] private Transform startPoint;
 
-    private void Start()
-    {
-        CheckpointData checkpointData = CheckPointManager.Instance.LoadCheckpoint();
-        if (checkpointData != null)
+        protected override void Awake()
         {
-            player.transform.position = checkpointData.playerPosition;
-            //ScoreManager.Instance.
+            base.Awake();
+            CheckpointData checkpointData = CheckPointManager.Instance.LoadCheckpoint();
+            if (checkpointData != null)
+            {
+                player.transform.position = checkpointData.playerPosition;
+            }
+            else
+            {
+                player.transform.position = startPoint.position;
+            }
+        }
+        private void Start()
+        {
+           
         }
 
-    }
-
-    public void RemoveCheckPoint(GameObject checkpoint)
-    {
-        if (checkPoints.Contains(checkpoint))
+        //we can use this method to remove the reached checkpoint from list
+        public void RemoveCheckPoint(GameObject checkpoint)
         {
-            checkPoints.Remove(checkpoint);
+            if (checkPoints.Contains(checkpoint))
+            {
+                checkPoints.Remove(checkpoint);
+            }
+            Destroy(checkpoint);
         }
-        Destroy(checkpoint);
-    }
 
-    public void OnMenuButtonClicked()
-    {
-        SceneManager.LoadScene("MenuScene");
-    }
+        #region Button click events
 
-    public void OnRestartButtonClicked()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+        //menu button click
+        public void OnMenuButtonClicked()
+        {
+            SceneManager.LoadScene("MenuScene");
+            Reset();
+        }
 
-    public void GameOver()
-    {
-        IsGameOver = true;
-        EventManager.Instance.TriggerGameOverEvent(); // Trigger the game over event
-    }
+        //restsrts the level
+        public void OnRestartButtonClicked()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Reset();
+        }
 
-    public void Reset()
-    {
-        IsGameOver = false;
+        #endregion
 
+
+        //triggers when game is over
+        public void GameOver()
+        {
+            IsGameOver = true;
+            EventManager.Instance.TriggerGameOverEvent(); // Trigger the game over event
+        }
+
+        //reset game data
+        public void Reset()
+        {
+            IsGameOver = false;
+            UIManager.Instance.Reset();
+            ScoreManager.Instance.Reset();
+        }
     }
 }

@@ -1,52 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class FloatingPlatform : Obstacle
+namespace RoninLabs.Maze3D
 {
-    [Header("Settings")]
-    [SerializeField] private float floatHeight = 1.0f; // Maximum height of the floating motion
-    [SerializeField] private float floatSpeed = 1.0f; // Speed of the floating motion
-    [SerializeField] private Transform player;
-
-    #region private components
-    private Vector3 initialPosition;
-    #endregion
-
-    void Start()
+    /// <summary>
+    /// floating platform inherited from base obstacle class activates only when the player is close
+    /// else remains deactivated
+    /// </summary>
+    public class FloatingPlatform : Obstacle
     {
-        initialPosition = transform.position;
-        EventManager.Instance.OnGameOver += HandleGameOverEvent;
-    }
+        [Header("Settings")]
+        [SerializeField] private float floatHeight = 1.0f; // Maximum height of the floating motion
+        [SerializeField] private float floatSpeed = 1.0f; // Speed of the floating motion
+        [SerializeField] private Transform player;
 
-    private void OnDestroy()
-    {
-        EventManager.Instance.OnGameOver -= HandleGameOverEvent;
-    }
+        #region private components
+        private Vector3 initialPosition;
+        #endregion
 
-    private void HandleGameOverEvent()
-    {
-        Deactivate();
-    }
+        void Start()
+        {
+            initialPosition = transform.position;
+            EventManager.Instance.OnGameOver += HandleGameOverEvent;
+        }
 
-    private void Update()
-    {
-        if (!isActive || GameManager.Instance.IsGameOver)
-            return;
+        private void OnDestroy()
+        {
+            EventManager.Instance.OnGameOver -= HandleGameOverEvent;
+        }
 
-        Activate();
-    }
+        private void HandleGameOverEvent()
+        {
+            Deactivate();
+        }
 
-    // Override method triggers when player is close to this object
-    public override void Activate()
-    {
-        float newY = initialPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
-        transform.position = new Vector3(transform.position.x, newY, transform.position.z);
-    }
+        private void Update()
+        {
+            if (!isActive || GameManager.Instance.IsGameOver)
+                return;
 
-    // Override method triggers when player moves far away from this object
-    public override void Deactivate()
-    {
-        transform.position = initialPosition;
+            Activate();
+        }
+
+        // Override method triggers when player is close to this object
+        public override void Activate()
+        {
+            float newY = initialPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+        }
+
+        // Override method triggers when player moves far away from this object
+        public override void Deactivate()
+        {
+            transform.position = initialPosition;
+        }
     }
 }

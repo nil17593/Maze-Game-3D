@@ -1,62 +1,61 @@
 using System.Collections;
 using UnityEngine;
 
-public class Trap : Obstacle
+namespace RoninLabs.Maze3D
 {
-    public GameObject[] hazards;
-    public float activationDuration = 2f;
-    public float deactivationDuration = 3f;
-    [SerializeField] private Transform player;
-    private Coroutine toggleCoroutine;
-
-    void Start()
+    /// <summary>
+    /// Trap obstacle takes array of hazrards and activates and deactivates then continuously when player is near
+    /// </summary>
+    public class Trap : Obstacle
     {
-        toggleCoroutine = StartCoroutine(ToggleTrap());
-    }
+        public GameObject[] hazards;
+        public float activationDuration = 2f;
+        public float deactivationDuration = 3f;
+        private Coroutine toggleCoroutine;
 
-    IEnumerator ToggleTrap()
-    {
-        while (true)
+        void Start()
         {
-            bool isPlayerClose = Vector3.Distance(transform.position, player.position) < activateDistance;
+            toggleCoroutine = StartCoroutine(ToggleTrap());
+        }
 
-            if (isPlayerClose)
+        //coroutine for Toggle between traps active and deactivate position
+        IEnumerator ToggleTrap()
+        {
+            if (GameManager.Instance.IsGameOver)
+                yield break;
+
+            while (true)
             {
-                isActive = !isActive;
                 if (isActive)
                 {
                     Activate();
                     yield return new WaitForSeconds(activationDuration);
+                    Deactivate();
+                    yield return new WaitForSeconds(deactivationDuration);
                 }
                 else
                 {
                     Deactivate();
-                    yield return new WaitForSeconds(deactivationDuration);
+                    yield return null;
                 }
             }
-            else
+        }
+
+        //override method to Activate obstacle
+        public override void Activate()
+        {
+            foreach (GameObject hazard in hazards)
             {
-                isActive = false;
-                Deactivate();
+                hazard.SetActive(true);
             }
-
-            yield return null;
         }
-    }
 
-    public override void Activate()
-    {
-        foreach (GameObject hazard in hazards)
+        public override void Deactivate()
         {
-            hazard.SetActive(true);
-        }
-    }
-
-    public override void Deactivate()
-    {
-        foreach (GameObject hazard in hazards)
-        {
-            hazard.SetActive(false);
+            foreach (GameObject hazard in hazards)
+            {
+                hazard.SetActive(false);
+            }
         }
     }
 }

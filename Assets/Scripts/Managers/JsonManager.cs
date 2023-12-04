@@ -1,39 +1,42 @@
 using System.IO;
 using UnityEngine;
 
-public class JsonManager : Singleton<JsonManager>
+namespace RoninLabs.Maze3D
 {
-    [SerializeField] private string savePath = "checkpointData.json"; // File path resides here
-
-    public void SaveData<T>(T data)
+    public class JsonManager : Singleton<JsonManager>
     {
-        string jsonData = JsonUtility.ToJson(data);
-        File.WriteAllText(savePath, jsonData);
-    }
+        [SerializeField] private string savePath = "checkpointData.json"; // File path resides here
 
-    public T LoadData<T>()
-    {
-        if (File.Exists(savePath))
+        public void SaveData<T>(T data)
         {
-            string jsonData = File.ReadAllText(savePath);
-            return JsonUtility.FromJson<T>(jsonData);
+            string jsonData = JsonUtility.ToJson(data);
+            File.WriteAllText(savePath, jsonData);
         }
-        else
-        {
-            Debug.LogError("No saved data found.");
-            return default;
-        }
-    }
 
-    public void DeleteData()
-    {
-        if (File.Exists(savePath))
+        public T LoadData<T>()
         {
-            File.Delete(savePath);
+            if (File.Exists(savePath))
+            {
+                string jsonData = File.ReadAllText(savePath);
+                return JsonUtility.FromJson<T>(jsonData);
+            }
+            else
+            {
+                Debug.LogError("No saved data found.");
+                return default;
+            }
         }
-        else
+
+        public void DeleteData()
         {
-            Debug.Log("No data to delete.");
+            if (File.Exists(savePath))
+            {
+                File.Delete(savePath);
+            }
+            else
+            {
+                Debug.Log("No data to delete.");
+            }
         }
     }
 }

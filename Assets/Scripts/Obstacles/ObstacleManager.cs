@@ -1,26 +1,32 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObstacleManager : MonoBehaviour
+namespace RoninLabs.Maze3D
 {
-    [SerializeField] private List<Obstacle> obstacles;
-    [SerializeField] private Transform player;
-    private void Update()
+    /// <summary>
+    /// Manager class for all the in game obstacle
+    /// activates and deactivates obstacles depending on the players position
+    /// </summary>
+    public class ObstacleManager : MonoBehaviour
     {
-
-        foreach (Obstacle obstacle in obstacles)
+        [SerializeField] private List<Obstacle> obstacles;
+        [SerializeField] private Transform player;
+        private void Update()
         {
-            float distance = Vector3.Distance(player.transform.position, obstacle.transform.position);
-            if (distance <= obstacle.activateDistance)
-            {
-                obstacle.isActive = true;
-            }
-            else
-            {
-                obstacle.isActive = false;
-            }
 
+            foreach (Obstacle obstacle in obstacles)
+            {
+                float distance = Vector3.Distance(player.transform.position, obstacle.transform.position);
+                if (distance <= obstacle.activateDistance)
+                {
+                    obstacle.isActive = true;
+                }
+                else
+                {
+                    obstacle.isActive = false;
+                }
+
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
 
-public interface IDamagable
+namespace RoninLabs.Maze3D
 {
-    void TakeDamage();
+    public interface IDamagable
+    {
+        void TakeDamage();
+    }
 }

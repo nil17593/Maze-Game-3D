@@ -1,15 +1,18 @@
 using UnityEngine;
 using System;
 
-[CreateAssetMenu(fileName = "AudioData", menuName = "Audio/AudioData")]
-public class AudioData : ScriptableObject
+namespace RoninLabs.Maze3D
 {
-    public AudioSource soundEffect;
-    public AudioSource soundMusic;
-    public SoundType[] sounds;
-
-    public SoundType GetSound(Sounds sound)
+    [CreateAssetMenu(fileName = "AudioData", menuName = "Audio/AudioData")]
+    public class AudioData : ScriptableObject
     {
-        return Array.Find(sounds, i => i.soundType == sound);
+        public AudioSource soundEffect;
+        public AudioSource soundMusic;
+        public SoundType[] sounds;
+
+        public SoundType GetSound(Sounds sound)
+        {
+            return Array.Find(sounds, i => i.soundType == sound);
+        }
     }
 }

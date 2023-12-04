@@ -1,10 +1,16 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
-public class MenuManager : MonoBehaviour
+namespace RoninLabs.Maze3D
 {
-    public void OnPlayButtonClicked()
+    /// <summary>
+    /// handles menu scene 
+    /// </summary>
+    public class MenuManager : MonoBehaviour
     {
-        SceneManager.LoadScene("GameScene");
+        public void OnPlayButtonClicked()
+        {
+            SceneManager.LoadScene("GameScene");
+        }
     }
 }
