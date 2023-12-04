@@ -40,5 +40,5 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         // Display the time as the score on the UI text
         scoreText.text = "Score: " + Mathf.Round(time).ToString();
-    }
+    } 
 }
