@@ -8,8 +8,10 @@ during navigating the maze there are some challenges to the player where obstacl
 5- Obstacles - there is base class for obstacles and depending on that there are type of obstacles like Trap and Floating platform.
 6- obstaclemanager- obstacle manager holds the list of all obstacles in the scene and depending on the players position it activates the obstacle which is close to the player.
 7- AudioManager- there is one audio.manager class which includes the serializable class to specify between different type of audios and when player interacts with specific thing in the game we can easily play corresponding sound by passing simple enum types
+8- EventManager- there are two events which are subscribed by various managers or individuals for Gameover and for checkpoint reached it handles corresponding data when particular event triggered.
 
 future enhancements
 1- adding sounds
-2- creating Scriptable objects for audio manager and obstacles which will hold their respective data and we can easily use that data in our game
+2- creating Scriptable objects for audio manager and obstacles which will hold their respective data and we can easily use that data in our game.
+3- scene setup enhancement adding particle effects and lighting for the maze.
 
